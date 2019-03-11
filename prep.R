@@ -6,6 +6,7 @@ state_list<-(as.character.factor(states))
 length(state_list)
 
 
+
 # Use of petroleum: PATCB.
 # Seperate PATCB for 51 states from 1960-2014 and store them in a matrix m.
 m=matrix(0, nrow = 55, ncol = length(state_list)+1)
