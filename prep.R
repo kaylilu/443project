@@ -14,6 +14,9 @@ WA_data
 WA_data2<-cbind(WA_data$year,WA_data$value)
 plot(WA_data2)
 
+
+
+
 # MAINE
 ME<-subset(seds_all_states_long, state=="ME")
 
