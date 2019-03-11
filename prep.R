@@ -2,7 +2,7 @@
 # import the data on your own!
 states<-(unique(seds_all_states_long$state))
 states
-state_list<-(as.character.factor(states))
+state_list<-(as.character(states))
 length(state_list)
 
 
