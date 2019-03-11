@@ -12,6 +12,8 @@ WA<-subset(seds_all_states_long, state=="WA")
 WA_data <- subset(seds_all_states_long, state=="WA"& msn=="HYTCB",)
 WA_data
 WA_data2<-cbind(WA_data$year,WA_data$value)
+
+
 plot(WA_data2)
 
 # MAINE
