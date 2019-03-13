@@ -21,8 +21,10 @@ colnames(m)[1]="year"
 for(i in 1:length(state_list)){
   colnames(m)[i+1]=state_list[i]
 }
---
-#-----------------------create plot for petro------------------------------------------- 
+
+
+write.table(m, file="/Users/leonie/Desktop/temp/petro/petro.txt", row.names=FALSE, col.names=colnames(m))
+
 layout(matrix(c(1:9), 3, 3, byrow = TRUE))
 plotAts<-function(s){
   myts<-ts(m[,s+1],start=c(1960),end=c(2014),frequency=1)
@@ -67,6 +69,7 @@ which( colnames(mat_hydro)=="NJ" ) #31
 which( colnames(mat_hydro)=="DC" ) #52
 
 mat_hydro<-mat_hydro[,-c(9,19,25,31,52)]
+write.table(mat_hydro, file="/Users/leonie/Desktop/temp/hydro/hydro.txt", row.names=FALSE, col.names=colnames(mat_hydro))
 layout(matrix(c(1:9), 3, 3, byrow = TRUE))
 plotAts<-function(s){
   myts<-ts(mat_hydro[,s+1],start=c(1960),end=c(2014),frequency=1)
@@ -101,6 +104,7 @@ for(i in 1:length(state_list)){
 mat_biom
 
 mat_biom<-mat_biom[,-c(9,19,25,31,52)]
+write.table(mat_biom, file="/Users/leonie/Desktop/temp/biomass/biomass.txt", row.names=FALSE, col.names=colnames(mat_biom))
 layout(matrix(c(1:9), 3, 3, byrow = TRUE))
 plotAts<-function(s){
   myts<-ts(mat_biom[,s+1],start=c(1960),end=c(2014),frequency=1)
