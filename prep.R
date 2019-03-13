@@ -21,7 +21,7 @@ colnames(m)[1]="year"
 for(i in 1:length(state_list)){
   colnames(m)[i+1]=state_list[i]
 }
-
+--
 #-----------------------create plot for petro------------------------------------------- 
 layout(matrix(c(1:9), 3, 3, byrow = TRUE))
 plotAts<-function(s){
@@ -33,7 +33,104 @@ for (i in 1:51){
 }
 plots.dir.path <- list.files(tempdir(), pattern="rs-graphics", full.names = TRUE); 
 plots.png.paths <- list.files(plots.dir.path, pattern=".png", full.names = TRUE)
-file.copy(from=plots.png.paths, to="/Users/leonie/Desktop/temp") #change this to your local folder
+file.copy(from=plots.png.paths, to="/Users/leonie/Desktop/temp/petro") #change this to your local folder
+
+
+#--------------------------------HYTCB-----------------------------------------
+# seperate data for hydroelectric
+mat_hydro=matrix(0, nrow = 55, ncol = length(state_list)+1)
+mat_hydro[,1]=c(1960:2014)
+
+for(i in 1:length(state_list)){
+  temp=subset(seds_all_states_long, state==state_list[i]& msn=="HYTCB")
+  mat_hydro[,i+1]=log(temp$value)
+}
+
+# Put labels on the 52 cols: year, AL,...,DC
+colnames(mat_hydro)=c(1:52)
+colnames(mat_hydro)[1]="year"
+for(i in 1:length(state_list)){
+  colnames(mat_hydro)[i+1]=state_list[i]
+}
+mat_hydro
+
+# NOTE: By inspection, the following states have irregular data (DE LA MS NJ DC)
+# subset(seds_all_states_long, state=="DE"& msn=="HYTCB") # no data
+which( colnames(mat_hydro)=="DE" ) #9
+# subset(seds_all_states_long, state=="LA"& msn=="HYTCB") # data not complete
+which( colnames(mat_hydro)=="LA" ) #19
+# subset(seds_all_states_long, state=="MS"& msn=="HYTCB") # no data
+which( colnames(mat_hydro)=="MS" ) #25
+# subset(seds_all_states_long, state=="NJ"& msn=="HYTCB") # very large neg data
+which( colnames(mat_hydro)=="NJ" ) #31
+# subset(seds_all_states_long, state=="DC"& msn=="HYTCB") # data not complete
+which( colnames(mat_hydro)=="DC" ) #52
+
+mat_hydro<-mat_hydro[,-c(9,19,25,31,52)]
+layout(matrix(c(1:9), 3, 3, byrow = TRUE))
+plotAts<-function(s){
+  myts<-ts(mat_hydro[,s+1],start=c(1960),end=c(2014),frequency=1)
+  plot(myts)
+}
+
+for (i in 1:(ncol(mat_hydro)-1)){
+  plotAts(i)
+}
+
+plots.dir.path <- list.files(tempdir(), pattern="rs-graphics", full.names = TRUE); 
+plots.png.paths <- list.files(plots.dir.path, pattern=".png", full.names = TRUE)
+file.copy(from=plots.png.paths, to="/Users/leonie/Desktop/temp/hydro") #change this to your local folder
+
+
+#--------------------------------BMTCB---------------------------------------------
+# seprate data for biomass
+mat_biom=matrix(0, nrow = 55, ncol = length(state_list)+1)
+mat_biom[,1]=c(1960:2014)
+
+for(i in 1:length(state_list)){
+  temp=subset(seds_all_states_long, state==state_list[i]& msn=="HYTCB")
+  mat_biom[,i+1]=log(temp$value)
+}
+
+# Put labels on the 52 cols: year, AL,...,DC
+colnames(mat_biom)=c(1:52)
+colnames(mat_biom)[1]="year"
+for(i in 1:length(state_list)){
+  colnames(mat_biom)[i+1]=state_list[i]
+}
+mat_biom
+
+mat_biom<-mat_biom[,-c(9,19,25,31,52)]
+layout(matrix(c(1:9), 3, 3, byrow = TRUE))
+plotAts<-function(s){
+  myts<-ts(mat_biom[,s+1],start=c(1960),end=c(2014),frequency=1)
+  plot(myts)
+}
+
+for (i in 1:(ncol(mat_biom)-1)){
+  plotAts(i)
+}
+
+plots.dir.path <- list.files(tempdir(), pattern="rs-graphics", full.names = TRUE); 
+plots.png.paths <- list.files(plots.dir.path, pattern=".png", full.names = TRUE)
+file.copy(from=plots.png.paths, to="/Users/leonie/Desktop/temp/biomass") #change this to your local folder
+
+
+
+# next, label the time series plots for different states 
+# output the three time series matrix, store them in text file. 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
