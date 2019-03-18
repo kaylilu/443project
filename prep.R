@@ -1,5 +1,6 @@
 #------------------------------------DATA INITIALIZATION-----------------------------------------
 # import data
+seds_all_states_long = read.csv("seds_all_states_long.csv")
 states<-(unique(seds_all_states_long$state))
 states
 state_list<-(as.character(states))
@@ -23,17 +24,21 @@ for(i in 1:length(state_list)){
 }
 
 
-write.table(m, file="/Users/kayli/Desktop/temp/petro/petro.txt", row.names=FALSE, col.names=colnames(m))
+write.table(m, file="petro.txt", row.names=FALSE, col.names=colnames(m))
 
 layout(matrix(c(1:9), 3, 3, byrow = TRUE))
 plotAts<-function(s){
   myts<-ts(m[,s+1],start=c(1960),end=c(2014),frequency=1)
   plot(myts,main=colnames(m)[s+1])
 }
+#plots PATCB by state
 for (i in 1:51){
   plotAts(i)
 }
-
+# Overlay of all PATCB consumption by state
+ts.plot(subset(m, select = c(state_list[1:25])),gpars= list(col=rainbow(25)))
+ts.plot(subset(m, select = c(state_list[26:51])),gpars= list(col=rainbow(26)))
+ts.plot(subset(m, select = c(state_list)),gpars= list(col=rainbow(51)))
 
 plots.dir.path <- list.files(tempdir(), pattern="rs-graphics", full.names = TRUE); 
 plots.png.paths <- list.files(plots.dir.path, pattern=".png", full.names = TRUE)
