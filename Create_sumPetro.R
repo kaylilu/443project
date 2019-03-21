@@ -46,6 +46,22 @@ fit2_1 # 2.784
 fit2_2<-arima(df2,c(1,0,1),method="CSS")
 fit2_2 # 2.362
 
+sumPetro
+dtrain<-sumPetro[1:41,]
+dtrain
+dhold<-sumPetro[42:nrow(sumPetro),]
+dhold
+
+fitarima011<-arima(dtrain[,2],c(0,1,1),method="CSS")
+print(fitarima011) # 2.564
+
+
+fitarima012<-arima(dtrain[,2],c(0,1,2),method="CSS")
+print(fitarima012) # 2.19
+
+p<-predict(fitarima012,n.ahead=14)
+
+
 
 sumPetro
 dtrain<-sumPetro[1:41,]
