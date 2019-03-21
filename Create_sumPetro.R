@@ -14,6 +14,9 @@ myTs<-ts(sumPetro[,2],start=c(1960),end=c(2014),frequency=1)
 plot(myTs)
 acf(myTs)
 pacf(myTs)
+# simple, linear exponential smoothing
+# HoltWinters(myTs,beta=TRUE,period=1)
+
 
 # ARIMA FIT Df=1
 df1<-diff(myTs,1)
@@ -22,6 +25,9 @@ acf(df1)
 pacf(df1)
 fit1<-arima(df1,c(0,0,1),method="CSS")
 print(fit1) # sigma^2 estimated as 2.095
+sqrt(sum(fit1$sigma2)/(54)) # 0.1969702
+
+#RMSE
 fit1_1<-arima(myTs,c(0,1,1),method="CSS")
 print(fit1_1) # sigma^2 estimated as 2.21
 
@@ -32,10 +38,14 @@ acf(df2)
 pacf(df2)
 fit2<-arima(df2,c(0,0,2),method="CSS")
 fit2 # sigma^2 estimated as 1.968
+sqrt(sum(fit2$sigma2)/(54))  # RMSE 0.190921
+
 fit2_1<-arima(df2,c(3,0,0),method="CSS")
 fit2_1 # 2.784
+
 fit2_2<-arima(df2,c(1,0,1),method="CSS")
 fit2_2 # 2.362
+
 
 sumPetro
 dtrain<-sumPetro[1:41,]
@@ -52,5 +62,5 @@ print(fitarima012) # 2.19
 
 p<-predict(fitarima012,n.ahead=14)
 
-
-
+# use different rules:
+# a,b,c,d

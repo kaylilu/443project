@@ -34,7 +34,6 @@ for (i in 1:51){
   plotAts(i)
 }
 
-
 plots.dir.path <- list.files(tempdir(), pattern="rs-graphics", full.names = TRUE); 
 plots.png.paths <- list.files(plots.dir.path, pattern=".png", full.names = TRUE)
 file.copy(from=plots.png.paths, to="/Users/kayli/Desktop/temp/petro") #change this to your local folder
@@ -122,7 +121,7 @@ plots.png.paths <- list.files(plots.dir.path, pattern=".png", full.names = TRUE)
 file.copy(from=plots.png.paths, to="/Users/kayli/Desktop/temp/biomass") #change this to your local folder
 
 
-
+ts.plot(m,gpars= list(col=m))
 # next, label the time series plots for different states 
 # output the three time series matrix, store them in text file. 
 
