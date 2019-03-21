@@ -35,13 +35,11 @@ plotAts<-function(s){
 for (i in 1:51){
   plotAts(i)
 }
-<<<<<<< HEAD
-=======
 # Overlay of all PATCB consumption by state
+par(3)
 ts.plot(subset(m, select = c(state_list[1:25])),gpars= list(col=rainbow(25)))
 ts.plot(subset(m, select = c(state_list[26:51])),gpars= list(col=rainbow(26)))
 ts.plot(subset(m, select = c(state_list)),gpars= list(col=rainbow(51)))
->>>>>>> 73d46d01182409edc92fb17f54d89b44f1ef3345
 
 plots.dir.path <- list.files(tempdir(), pattern="rs-graphics", full.names = TRUE); 
 plots.png.paths <- list.files(plots.dir.path, pattern=".png", full.names = TRUE)
@@ -130,7 +128,7 @@ plots.png.paths <- list.files(plots.dir.path, pattern=".png", full.names = TRUE)
 file.copy(from=plots.png.paths, to="/Users/kayli/Desktop/temp/biomass") #change this to your local folder
 
 
-ts.plot(m,gpars= list(col=m))
+
 # next, label the time series plots for different states 
 # output the three time series matrix, store them in text file. 
 
@@ -177,3 +175,4 @@ ME_data2<-cbind(ME_data$year,ME_data$value)
 plot(ME_data2)
 
 # PATCB??
+
