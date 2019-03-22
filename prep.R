@@ -1,5 +1,6 @@
 #------------------------------------DATA INITIALIZATION-----------------------------------------
 # import data
+seds_all_states_long <- read.csv("~/Library/Mobile Documents/com~apple~CloudDocs/18W2/STAT443/project/seds_all_states_long.csv")
 seds_all_states_long = read.csv("seds_all_states_long.csv")
 states<-(unique(seds_all_states_long$state))
 states
@@ -39,7 +40,9 @@ for (i in 1:51){
 par(3)
 ts.plot(subset(m, select = c(state_list[1:25])),gpars= list(col=rainbow(25)))
 ts.plot(subset(m, select = c(state_list[26:51])),gpars= list(col=rainbow(26)))
-ts.plot(subset(m, select = c(state_list)),gpars= list(col=rainbow(51)))
+u<-ts(subset(m, select = c(state_list)),start=c(1960),end=c(2014))
+u
+ts.plot(u,gpars= list(col=rainbow(51)),main="log(petro consumption) for each state",xlab="year",ylab="log petro consumption")
 
 plots.dir.path <- list.files(tempdir(), pattern="rs-graphics", full.names = TRUE); 
 plots.png.paths <- list.files(plots.dir.path, pattern=".png", full.names = TRUE)
@@ -77,6 +80,10 @@ which( colnames(mat_hydro)=="NJ" ) #31
 which( colnames(mat_hydro)=="DC" ) #52
 
 mat_hydro<-mat_hydro[,-c(9,19,25,31,52)]
+h<-ts(subset(mat_hydro, select = c(state_list)),start=c(1960),end=c(2014))
+h
+ts.plot(h,gpars= list(col=rainbow(51)),main="log(hydro consumption) for each state",xlab="year",ylab="log hydro consumption")
+
 write.table(mat_hydro, file="/Users/kayli/Desktop/temp/hydro/hydro.txt", row.names=FALSE, col.names=colnames(mat_hydro))
 layout(matrix(c(1:9), 3, 3, byrow = TRUE))
 plotAts<-function(s){
@@ -90,7 +97,7 @@ for (i in 1:(ncol(mat_hydro)-1)){
 
 plots.dir.path <- list.files(tempdir(), pattern="rs-graphics", full.names = TRUE); 
 plots.png.paths <- list.files(plots.dir.path, pattern=".png", full.names = TRUE)
-file.copy(from=plots.png.paths, to="/Users/kayli/Desktop/temp/hydro") #change this to your local folder
+file.copy(from=plots.png.paths, to="/Users/kayli/Desktop/temp/hydro") # change this to your local folder
 
 
 #--------------------------------BMTCB---------------------------------------------
@@ -99,7 +106,7 @@ mat_biom=matrix(0, nrow = 55, ncol = length(state_list)+1)
 mat_biom[,1]=c(1960:2014)
 
 for(i in 1:length(state_list)){
-  temp=subset(seds_all_states_long, state==state_list[i]& msn=="HYTCB")
+  temp=subset(seds_all_states_long, state==state_list[i]& msn=="BMTCB")
   mat_biom[,i+1]=log(temp$value)
 }
 
@@ -109,9 +116,17 @@ colnames(mat_biom)[1]="year"
 for(i in 1:length(state_list)){
   colnames(mat_biom)[i+1]=state_list[i]
 }
-mat_biom
+
+
 
 mat_biom<-mat_biom[,-c(9,19,25,31,52)]
+b<-ts(subset(mat_biom, select = c(state_list)),start=c(1960),end=c(2014))
+b
+ts.plot(b,gpars= list(col=rainbow(51)),
+        main="log(biomass consumption) for each state",
+        xlab="year",
+        ylab="log biomass consumption")
+
 write.table(mat_biom, file="/Users/kayli/Desktop/temp/biomass/biomass.txt", row.names=FALSE, col.names=colnames(mat_biom))
 layout(matrix(c(1:9), 3, 3, byrow = TRUE))
 plotAts<-function(s){
@@ -154,7 +169,7 @@ file.copy(from=plots.png.paths, to="/Users/kayli/Desktop/temp/biomass") #change 
 OR<-subset(seds_all_states_long, state=="OR")
 OR
 
-OR_data <- subset(seds_all_states_long, state=="OR"& msn=="HYTCB",)
+OR_data <- subset(seds_all_states_long, state=="OR"& msn=="HYTCB")
 OR_data2<-cbind(OR_data$year,OR_data$value)
 
 # Washington hydro elec HYTCB
@@ -168,8 +183,9 @@ plot(WA_data2)
 # MAINE
 ME<-subset(seds_all_states_long, state=="ME")
 
-ME_data <- subset(seds_all_states_long, state=="ME"& msn=="HYTCB",)
+ME_data <- subset(seds_all_states_long, state=="ME"& msn=="HYTCB")
 ME_data
+
 # 
 ME_data2<-cbind(ME_data$year,ME_data$value)
 plot(ME_data2)

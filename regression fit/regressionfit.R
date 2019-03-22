@@ -1,5 +1,5 @@
 final <- read.table("~/Desktop/temp/final.txt", quote="\"", comment.char="", stringsAsFactors=FALSE)
-View(final)
+# View(final)
 `colnames<-`(final,c("year","consumption","price","gdp"))
 final[,4]<-log(final[,4])
 final
@@ -39,9 +39,9 @@ acf(lmfit$resid)
 pacf(lmfit$resid)
 
 df_residual=diff(lmfit$resid,1)
-plot(df_residual)
-acf(df_residual)
-pacf(df_residual)
+plot(df_residual,main="df_residual")
+acf(df_residual,main="acf df_residual")
+pacf(df_residual,main="pacf df_residual")
 # after differencing once, residuals seem ok? test ARIMA(0,1,2) model
 
 # test MA2
@@ -63,7 +63,7 @@ print(fitma2x)
 # s.e.  0.2316  0.1830   0.0452   7.6775
 # 
 # sigma^2 estimated as 1.364:  part log likelihood = -45.65
-
+par(mfrow=c(2,1))
 acf(fitma2x$residuals)
 pacf(fitma2x$residuals)
 
