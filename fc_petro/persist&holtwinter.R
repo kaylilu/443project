@@ -178,7 +178,7 @@ fit
 # s.e.  0.0984
 # 
 # sigma^2 estimated as 2.792:  part log likelihood = -65.7
-predict(fit,n.ahead=20)$pred
+predict(fit,n.ahead=20, prediction.interval = T)$pred
 fc_arima<-c(660.7176,660.7176,660.7176,660.7176,660.7176,60.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,
             660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176)
 length(fc_arima)
@@ -186,3 +186,15 @@ sqrt(sum((lholdo[,2]-fc_arima)^2)/20)
 
 displaylist[,6]<-fc_arima
 displaylist
+
+#try AR(1)
+
+fitar1 = arima (myts, order = c(1,0,0), method = "CSS")
+fitar1
+predict(fitar1, n.ahead = 20, prediction.interval = T)
+
+fc_ar1 = c(660.2028,660.3233, 660.4325, 660.5315, 660.6213, 660.7027, 660.7766, 660.8435, 660.9042, 
+           660.9593, 661.0092,661.0544, 661.0955, 661.1327, 661.1664, 661.1970, 661.2248, 661.2499, 661.2727, 661.2934)
+
+rmse = sqrt(sum((lholdo_consump -fc_ar1)^2)/length(lholdo_consump))
+rmse #3.805953
