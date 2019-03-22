@@ -1,4 +1,5 @@
 sumPetro <- read.csv("~/Library/Mobile Documents/com~apple~CloudDocs/18W2/STAT443/project/443project/regression fit/sumPetro.txt", sep="", stringsAsFactors=FALSE)
+#sumPetro <- read.csv("sumPetro.txt", sep="", stringsAsFactors=FALSE) #input your sumPetro.txt may need to change directory 
 #View(sumPetro)
 
 ltrain<-sumPetro[1:35,] # 1960-1994
@@ -128,6 +129,37 @@ rmse=sqrt(sse/n_holdout)
 rmse # this is the rmse for linear exponential smoothing, 1.317906
 displaylist[,5]=fcvec
 displaylist
+
+# =========================================================================================================================
+
+#simple exponential smoothing; Holtwinters with only level
+esmfit = HoltWinters(myts[1:35], beta = F, gamma = F)
+esmfit$fitted
+vn = esmfit$coefficients
+
+# out of sample rmse calculation 1 step forcast
+fcvec = c()
+sse = 0
+fc = vn
+zt = lholdo_consump[1]
+newv= vn
+fcvec[1] = vn
+fcerror = fc - zt
+sse = sse + fcerror^2
+alpha_hat = esmfit$alpha
+
+#h step rmse calculation
+for(i in 2:length(lholdo_consump)){
+  newv = alpha_hat*lholdo_consump[i-1] + (1 - alpha_hat)*newv
+  fc = newv
+  fcvec[i] = newv
+  zt = lholdo_consump[i]
+  fcerror = zt-fc
+  sse = sse + fcerror^2
+}
+rmse=sqrt(sse/length(lholdo_consump))
+rmse #1.199091
+
 
 #=============ARIMA============================
 par(mfrow=c(3,3))
