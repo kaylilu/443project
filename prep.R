@@ -80,7 +80,10 @@ which( colnames(mat_hydro)=="NJ" ) #31
 which( colnames(mat_hydro)=="DC" ) #52
 
 mat_hydro<-mat_hydro[,-c(9,19,25,31,52)]
-h<-ts(subset(mat_hydro, select = c(state_list)),start=c(1960),end=c(2014))
+state_list1<-state_list[-c(8,18,24,30,51)]
+length(state_list1)
+state_list1
+h<-ts(subset(mat_hydro, select = c(state_list1)),start=c(1960),end=c(2014))
 h
 ts.plot(h,gpars= list(col=rainbow(51)),main="log(hydro consumption) for each state",xlab="year",ylab="log hydro consumption")
 
@@ -120,7 +123,7 @@ for(i in 1:length(state_list)){
 
 
 mat_biom<-mat_biom[,-c(9,19,25,31,52)]
-b<-ts(subset(mat_biom, select = c(state_list)),start=c(1960),end=c(2014))
+b<-ts(subset(mat_biom, select = c(state_list1)),start=c(1960),end=c(2014))
 b
 ts.plot(b,gpars= list(col=rainbow(51)),
         main="log(biomass consumption) for each state",
@@ -166,29 +169,38 @@ file.copy(from=plots.png.paths, to="/Users/kayli/Desktop/temp/biomass") #change 
 #subset(seds_all_states_long, state=="OR")
 #myts <- ts(log(temp$value), start=c(1960), end=c(2014), frequency=1)
 # oregon, hydro elec HYTCB
-OR<-subset(seds_all_states_long, state=="OR")
-OR
-
-OR_data <- subset(seds_all_states_long, state=="OR"& msn=="HYTCB")
-OR_data2<-cbind(OR_data$year,OR_data$value)
-
-# Washington hydro elec HYTCB
-WA<-subset(seds_all_states_long, state=="WA")
-WA_data <- subset(seds_all_states_long, state=="WA"& msn=="HYTCB",)
-WA_data
-WA_data2<-cbind(WA_data$year,WA_data$value)
-plot(WA_data2)
-
-
-# MAINE
-ME<-subset(seds_all_states_long, state=="ME")
-
-ME_data <- subset(seds_all_states_long, state=="ME"& msn=="HYTCB")
-ME_data
-
+# OR<-subset(seds_all_states_long, state=="OR")
+# OR
 # 
-ME_data2<-cbind(ME_data$year,ME_data$value)
-plot(ME_data2)
+# OR_data <- subset(seds_all_states_long, state=="OR"& msn=="HYTCB")
+# OR_data2<-cbind(OR_data$year,OR_data$value)
+# 
+# # Washington hydro elec HYTCB
+# WA<-subset(seds_all_states_long, state=="WA")
+# WA_data <- subset(seds_all_states_long, state=="WA"& msn=="HYTCB",)
+# WA_data
+# WA_data2<-cbind(WA_data$year,WA_data$value)
+# plot(WA_data2)
+# 
+# 
+# # MAINE
+# ME<-subset(seds_all_states_long, state=="ME")
+# 
+# ME_data <- subset(seds_all_states_long, state=="ME"& msn=="HYTCB")
+# ME_data
+# 
+# # 
+# ME_data2<-cbind(ME_data$year,ME_data$value)
+# plot(ME_data2)
+# 
+# # PATCB??
 
-# PATCB??
+# Run the whole code and then run the followings.
+par(mfrow=c(1,3))
+ts.plot(u,gpars= list(col=rainbow(51)),main="Table1. log(petro consumption) for each state",xlab="year",ylab="log petro consumption")
+ts.plot(h,gpars= list(col=rainbow(51)),main="Table2. log(hydro consumption) for each state",xlab="year",ylab="log hydro consumption")
+ts.plot(b,gpars= list(col=rainbow(51)),
+        main="Table3. log(biomass consumption) for each state",
+        xlab="year",
+        ylab="log biomass consumption")
 
