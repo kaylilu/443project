@@ -56,11 +56,9 @@ displaylist
 # Holt Winter function with trend
 View(sumPetro)
 myts<-ts(sumPetro[,2],start=c(1960),end=c(2014),frequency=1)
-par(mfrow=c(3,1))
+par(mfrow=c(1,3))
 plot(myts,xlab="year",ylab="total petro consumption",main="total consumption of petroleum")
-# from the plot, we observed that there's no seasonality, but trend.
-acf(myts,main="acf of total petro consumption"); 
-pacf(myts,main="pacf of total petro consumption")
+acf(myts,main="acf of total petro consumption");pacf(myts,main="pacf of total petro consumption")
 hlfit<-HoltWinters(myts,gamma=F)
 hlfit$fitted
 
@@ -130,12 +128,12 @@ displaylist[,5]=fcvec
 displaylist
 
 #=============ARIMA============================
-par(mfrow=c(3,3))
+par(mfrow=c(2,3))
 myts<-ts(ltrain[,2],start=c(1960),end=c(1994))
-plot(myts)
-acf(myts);pacf(myts)
+plot(myts, main = "petro")
+acf(myts, main="acf of petro");pacf(myts, main="pacf of petro")
 df<-diff(myts,1)
-plot(df);acf(df);pacf(df)
+plot(df,main="differenced petro");acf(df, main="acf of diff");pacf(df,main="pacf of diff")
 # test arima (0,1,1)?
 
 fit<-arima(myts,order=c(0,1,1),method="CSS")
@@ -198,8 +196,8 @@ summary(lmfit)
 
 
 par(mfrow=c(3,3))
-plot.ts(ltrain$consumption,xlab="log(consumption)",main="1960-1994")
-plot(lmfit$resid);acf(lmfit$resid);pacf(lmfit$resid)
+#plot.ts(ltrain$consumption,xlab="log(consumption)",main="1960-1995",start=c(1960),end=c(1995))
+plot(lmfit$resid,main="residual");acf(lmfit$resid,main="acf residual");pacf(lmfit$resid,main="pacf residual")
 
 df_residual=diff(lmfit$resid,1)
 plot(df_residual,main="df_residual");acf(df_residual,main="acf df_residual");pacf(df_residual,main="pacf df_residual")
@@ -230,10 +228,9 @@ print(fitma2x)
 # s.e.  0.2118  0.1708   0.0359   6.6042
 # 
 # sigma^2 estimated as 1.193:  part log likelihood = -51.24
-acf(fitma2x$residuals)
-pacf(fitma2x$residuals)
+plot(fitma2x$resid, main="residuals ARIMAX")
+acf(fitma2x$resid, main = "acf ARIMAX");pacf(fitma2x$resid, main= "pacf ARIMAX")
 
-# import out of sample fc error functions
 
 
 predict(fitma2x,newxreg=lholdo[,2:3] ,n.step=24)$pred
