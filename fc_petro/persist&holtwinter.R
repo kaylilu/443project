@@ -1,5 +1,4 @@
 sumPetro <- read.csv("~/Library/Mobile Documents/com~apple~CloudDocs/18W2/STAT443/project/443project/regression fit/sumPetro.txt", sep="", stringsAsFactors=FALSE)
-#sumPetro <- read.csv("sumPetro.txt", sep="", stringsAsFactors=FALSE) #input your sumPetro.txt may need to change directory 
 #View(sumPetro)
 
 ltrain<-sumPetro[1:35,] # 1960-1994
@@ -128,37 +127,6 @@ rmse # this is the rmse for linear exponential smoothing, 1.317906
 displaylist[,5]=fcvec
 displaylist
 
-# =========================================================================================================================
-
-#simple exponential smoothing; Holtwinters with only level
-esmfit = HoltWinters(myts[1:35], beta = F, gamma = F)
-esmfit$fitted
-vn = esmfit$coefficients
-
-# out of sample rmse calculation 1 step forcast
-fcvec = c()
-sse = 0
-fc = vn
-zt = lholdo_consump[1]
-newv= vn
-fcvec[1] = vn
-fcerror = fc - zt
-sse = sse + fcerror^2
-alpha_hat = esmfit$alpha
-
-#h step rmse calculation
-for(i in 2:length(lholdo_consump)){
-  newv = alpha_hat*lholdo_consump[i-1] + (1 - alpha_hat)*newv
-  fc = newv
-  fcvec[i] = newv
-  zt = lholdo_consump[i]
-  fcerror = zt-fc
-  sse = sse + fcerror^2
-}
-rmse=sqrt(sse/length(lholdo_consump))
-rmse #1.199091
-
-
 #=============ARIMA============================
 par(mfrow=c(2,3))
 myts<-ts(ltrain[,2],start=c(1960),end=c(1994))
@@ -177,12 +145,17 @@ fit
 # 
 # sigma^2 estimated as 2.792:  part log likelihood = -65.7
 <<<<<<< HEAD
+<<<<<<< HEAD
 predict(fit,n.ahead=20)$pred
 fc_arima<-c(660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,
 =======
 predict(fit,n.ahead=20, prediction.interval = T)$pred
 fc_arima<-c(660.7176,660.7176,660.7176,660.7176,660.7176,60.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,
 >>>>>>> e2759d6b5a62865b5400c1314bc74830d8e3325a
+=======
+predict(fit,n.ahead=20)$pred
+fc_arima<-c(660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,
+>>>>>>> 1ec48e4e99c3263a5e9439456a8300ea36b8e24f
             660.7176,660.7176,660.7176,660.7176,660.7176,660.7176,660.7176)
 length(fc_arima)
 sqrt(sum((lholdo[,2]-fc_arima)^2)/20)
@@ -190,6 +163,9 @@ sqrt(sum((lholdo[,2]-fc_arima)^2)/20)
 displaylist[,6]<-fc_arima
 displaylist
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 1ec48e4e99c3263a5e9439456a8300ea36b8e24f
 `colnames<-`(displaylist,c("year","holdout","persist","avg","holt-winter","arima"))
 
 
@@ -267,7 +243,12 @@ print(fitma2x)
 # 
 # sigma^2 estimated as 1.193:  part log likelihood = -51.24
 plot(fitma2x$resid, main="residuals ARIMAX")
+<<<<<<< HEAD
 acf(fitma2x$resid, main = "acf ARIMAX");pacf(fitma2x$resid, main= "pacf ARIMAX")
+=======
+acf(fitma2x$resid, main = "acf ARIMAX")
+pacf(fitma2x$resid, main= "pacf ARIMAX")
+>>>>>>> 1ec48e4e99c3263a5e9439456a8300ea36b8e24f
 
 
 
@@ -323,7 +304,11 @@ displaylist
 # [23,] 660.76 673.8608
 # [24,] 661.48 674.6550
 
+<<<<<<< HEAD
 =======
+=======
+
+>>>>>>> 1ec48e4e99c3263a5e9439456a8300ea36b8e24f
 
 #try AR(1)
 
