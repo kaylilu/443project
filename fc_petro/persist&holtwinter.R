@@ -321,113 +321,67 @@ rmse #3.805953
 
 
 
-
-
+lag(ts_gdp,1)
+ts_gdp
 # ==================AIMAX with lagged varibales=======================
 ts_consumption<-ts(consumption,start=c(1960),end=c(2014))
-ts_gdp<-ts(price,start=c(1960),end=c(2014))
+ts_gdp<-ts(gdp,start=c(1960),end=c(2014))
 dconsump<-diff(ts_consumption);dgdp<-diff(ts_gdp)
-cross=ccf(dgdp,dconsump) # it seem pgdp lead pconsump
+cross=ccf(dgdp,dconsump,main="cross corr of dgdp&dconsump") # it seem dgdp lags dcomsump?? cosump -> gdp
 
+plot(ts_gdp)
+plot(lag(ts_gdp,1))
 
-dgdpL1<-lag(ts_gdp,-1)
-
-mydat=ts.intersect(dconsump,dgdp,dgdpL1)
-fitlm<-lm(dconsump~dgdp+dgdpL1,mydat)
-summary(fitlm)
-# lm(formula = dconsump ~ dgdp + dgdpL1, data = mydat)
-# 
-# Residuals:
-#   Min      1Q  Median      3Q     Max 
-# -5.1728 -0.6021  0.2148  1.1341  2.4261 
-# 
+mydat=ts.intersect(ts_consumption,lag(ts_gdp,1))
+mydat
+fitarma00=arima(mydat[,1],order=c(0,1,0),xreg=mydat[,2])
+fitarma00 # 2.625
 # Coefficients:
-#   Estimate Std. Error t value Pr(>|t|)    
-# (Intercept)  1.314219   0.301899   4.353 6.47e-05 ***
-#   dgdp        -0.036834   0.024902  -1.479  0.14526    
-# dgdpL1      -0.027005   0.007765  -3.478  0.00104 ** 
-#   ---
-#   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#   mydat[, 2]
+# 25.3000
+# s.e.      6.0326
 # 
-# Residual standard error: 1.612 on 51 degrees of freedom
-# Multiple R-squared:  0.2187,	Adjusted R-squared:  0.188 
-# F-statistic: 7.136 on 2 and 51 DF,  p-value: 0.001851
-fitarma00=arima(mydat[,1],order=c(0,0,0),xreg=mydat[,2:3])
-fitarma00
+# sigma^2 estimated as 2.625:  log likelihood = -100.78,  aic = 205.55
 
-
-# Call:
-#   arima(x = mydat[, 1], order = c(0, 0, 0), xreg = mydat[, 2:3])
-# 
+fitarma10=arima(mydat[,1],order=c(1,1,0),xreg=mydat[,2]) 
+fitarma10 # 1.991
 # Coefficients:
-#   intercept     dgdp   dgdpL1
-# 1.3142  -0.0368  -0.0270
-# s.e.     0.2934   0.0242   0.0075
+#   ar1  mydat[, 2]
+# 0.4976     19.0624
+# s.e.  0.1225      8.0786
 # 
-# sigma^2 estimated as 2.453:  log likelihood = -100.85,  aic = 209.71
+# sigma^2 estimated as 1.991:  log likelihood = -93.59,  aic = 193.18
 
-fitarma10=arima(mydat[,1],order=c(1,0,0),xreg=mydat[,2:3])
-fitarma10
-# fitarma10
-# Call:
-#   arima(x = mydat[, 1], order = c(1, 0, 0), xreg = mydat[, 2:3])
-# 
+fitarma01=arima(mydat[,1],order=c(0,1,1),xreg=mydat[,2])
+fitarma01 # 2.015
 # Coefficients:
-#   ar1  intercept     dgdp   dgdpL1
-# 0.5154     1.4702  -0.0301  -0.0321
-# s.e.  0.1225     0.5112   0.0187   0.0124
+#   ma1  mydat[, 2]
+# 0.4974     18.5301
+# s.e.  0.1088      7.2535
 # 
-# sigma^2 estimated as 1.82:  log likelihood = -92.94,  aic = 195.88
+# sigma^2 estimated as 2.015:  log likelihood = -93.91,  aic = 193.82
 
-fitarma11=arima(mydat[,1],order=c(1,0,1),xreg=mydat[,2:3])
-fitarma11 # BEST
-# Call:
-#   arima(x = mydat[, 1], order = c(1, 0, 1), xreg = mydat[, 2:3])
-# 
+fitarma11=arima(mydat[,1],order=c(1,1,1),xreg=mydat[,2]) 
+fitarma11 # 1.959
 # Coefficients:
-#   ar1     ma1  intercept     dgdp   dgdpL1
-# 0.2364  0.4092     1.3978  -0.0329  -0.0303
-# s.e.  0.2039  0.1744     0.4448   0.0174   0.0111
+#   ar1     ma1  mydat[, 2]
+# 0.3155  0.2727     16.1317
+# s.e.  0.2482  0.2650      8.5475
 # 
-# sigma^2 estimated as 1.698:  log likelihood = -91.13,  aic = 194.26
+# sigma^2 estimated as 1.959:  log likelihood = -93.2,  aic = 194.4
+
+# out of sample RMSE
+fit=arima(mydat[1:35,1],order=c(1,1,1),xreg=mydat[1:35,2]) 
+fit 
+
+length(mydat[,2])
+fc<-predict(fit, n.step=19,newxreg=mydat[36:(54),2])$pred
+sqrt(sum((mydat[36:54,1]-fc)^2)/19) # 2.473665
+ 
 
 
-# =================DRAFT CROSS VALIDATION====================
-# final2<-final[,1:2]
-# final2[,3]<-final[,4]
-# final2
-# 
-# ts_consumption<-ts(consumption,start=c(1960),end=c(2014))
-# ts_gdp<-ts(price,start=c(1960),end=c(2014))
-# p1 = diff(ts_consumption); p2 = diff(ts_gdp)
-# cross=ccf(p1,p2)
-# cor(p1,p2) -0.1826065
-# n=length(p1)
-# cor(p1[1:(n-1)],p2[2:n]) # 0.1664332 
-# cor(p1[2:n],p2[1:(n-1)]) # -0.4154515 change in gdp -> change in consumption
-# p2L<-lag(p2,-1)
-# indi = ifelse(p2 < 0, 0, 1) # binary variable for change <0 or >0
-# df = ts.intersect(p1, p2, p2L, indi)
-# fit = lm(p1~ p2 + p2L + indi , data=df)
-# summary(fit)
 
-# Call:
-#   lm(formula = p1 ~ p2 + p2L, data = df)
-# 
-# Residuals:
-#   Min      1Q  Median      3Q     Max 
-# -4.1043 -1.0148  0.2972  1.1331  2.9491 
-# 
-# Coefficients:
-#   Estimate Std. Error t value Pr(>|t|)   
-# (Intercept)  0.78983    0.23396   3.376  0.00143 **
-#   p2          -0.04452    0.02521  -1.766  0.08348 . 
-# p2L         -0.08897    0.02560  -3.476  0.00106 **
-#   ---
-#   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-# 
-# Residual standard error: 1.624 on 50 degrees of freedom
-# Multiple R-squared:  0.2212,	Adjusted R-squared:   0.19 
-# F-statistic:   7.1 on 2 and 50 DF,  p-value: 0.001931
+
+
 
 
