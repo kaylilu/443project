@@ -54,7 +54,7 @@ displaylist[,4]=vec
 displaylist
 # ==================================HOLT WINTER================================================================
 # Holt Winter function with trend
-View(sumPetro)
+#View(sumPetro)
 myts<-ts(sumPetro[,2],start=c(1960),end=c(2014),frequency=1)
 par(mfrow=c(1,3))
 plot(myts,xlab="year",ylab="total petro consumption",main="total consumption of petroleum")
@@ -304,11 +304,8 @@ displaylist
 # [23,] 660.76 673.8608
 # [24,] 661.48 674.6550
 
-<<<<<<< HEAD
-=======
-=======
 
->>>>>>> 1ec48e4e99c3263a5e9439456a8300ea36b8e24f
+
 
 #try AR(1)
 
@@ -321,4 +318,116 @@ fc_ar1 = c(660.2028,660.3233, 660.4325, 660.5315, 660.6213, 660.7027, 660.7766, 
 
 rmse = sqrt(sum((lholdo_consump -fc_ar1)^2)/length(lholdo_consump))
 rmse #3.805953
->>>>>>> e2759d6b5a62865b5400c1314bc74830d8e3325a
+
+
+
+
+
+# ==================AIMAX with lagged varibales=======================
+ts_consumption<-ts(consumption,start=c(1960),end=c(2014))
+ts_gdp<-ts(price,start=c(1960),end=c(2014))
+dconsump<-diff(ts_consumption);dgdp<-diff(ts_gdp)
+cross=ccf(dgdp,dconsump) # it seem pgdp lead pconsump
+
+
+dgdpL1<-lag(ts_gdp,-1)
+
+mydat=ts.intersect(dconsump,dgdp,dgdpL1)
+fitlm<-lm(dconsump~dgdp+dgdpL1,mydat)
+summary(fitlm)
+# lm(formula = dconsump ~ dgdp + dgdpL1, data = mydat)
+# 
+# Residuals:
+#   Min      1Q  Median      3Q     Max 
+# -5.1728 -0.6021  0.2148  1.1341  2.4261 
+# 
+# Coefficients:
+#   Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)  1.314219   0.301899   4.353 6.47e-05 ***
+#   dgdp        -0.036834   0.024902  -1.479  0.14526    
+# dgdpL1      -0.027005   0.007765  -3.478  0.00104 ** 
+#   ---
+#   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Residual standard error: 1.612 on 51 degrees of freedom
+# Multiple R-squared:  0.2187,	Adjusted R-squared:  0.188 
+# F-statistic: 7.136 on 2 and 51 DF,  p-value: 0.001851
+fitarma00=arima(mydat[,1],order=c(0,0,0),xreg=mydat[,2:3])
+fitarma00
+
+
+# Call:
+#   arima(x = mydat[, 1], order = c(0, 0, 0), xreg = mydat[, 2:3])
+# 
+# Coefficients:
+#   intercept     dgdp   dgdpL1
+# 1.3142  -0.0368  -0.0270
+# s.e.     0.2934   0.0242   0.0075
+# 
+# sigma^2 estimated as 2.453:  log likelihood = -100.85,  aic = 209.71
+
+fitarma10=arima(mydat[,1],order=c(1,0,0),xreg=mydat[,2:3])
+fitarma10
+# fitarma10
+# Call:
+#   arima(x = mydat[, 1], order = c(1, 0, 0), xreg = mydat[, 2:3])
+# 
+# Coefficients:
+#   ar1  intercept     dgdp   dgdpL1
+# 0.5154     1.4702  -0.0301  -0.0321
+# s.e.  0.1225     0.5112   0.0187   0.0124
+# 
+# sigma^2 estimated as 1.82:  log likelihood = -92.94,  aic = 195.88
+
+fitarma11=arima(mydat[,1],order=c(1,0,1),xreg=mydat[,2:3])
+fitarma11 # BEST
+# Call:
+#   arima(x = mydat[, 1], order = c(1, 0, 1), xreg = mydat[, 2:3])
+# 
+# Coefficients:
+#   ar1     ma1  intercept     dgdp   dgdpL1
+# 0.2364  0.4092     1.3978  -0.0329  -0.0303
+# s.e.  0.2039  0.1744     0.4448   0.0174   0.0111
+# 
+# sigma^2 estimated as 1.698:  log likelihood = -91.13,  aic = 194.26
+
+
+# =================DRAFT CROSS VALIDATION====================
+# final2<-final[,1:2]
+# final2[,3]<-final[,4]
+# final2
+# 
+# ts_consumption<-ts(consumption,start=c(1960),end=c(2014))
+# ts_gdp<-ts(price,start=c(1960),end=c(2014))
+# p1 = diff(ts_consumption); p2 = diff(ts_gdp)
+# cross=ccf(p1,p2)
+# cor(p1,p2) -0.1826065
+# n=length(p1)
+# cor(p1[1:(n-1)],p2[2:n]) # 0.1664332 
+# cor(p1[2:n],p2[1:(n-1)]) # -0.4154515 change in gdp -> change in consumption
+# p2L<-lag(p2,-1)
+# indi = ifelse(p2 < 0, 0, 1) # binary variable for change <0 or >0
+# df = ts.intersect(p1, p2, p2L, indi)
+# fit = lm(p1~ p2 + p2L + indi , data=df)
+# summary(fit)
+
+# Call:
+#   lm(formula = p1 ~ p2 + p2L, data = df)
+# 
+# Residuals:
+#   Min      1Q  Median      3Q     Max 
+# -4.1043 -1.0148  0.2972  1.1331  2.9491 
+# 
+# Coefficients:
+#   Estimate Std. Error t value Pr(>|t|)   
+# (Intercept)  0.78983    0.23396   3.376  0.00143 **
+#   p2          -0.04452    0.02521  -1.766  0.08348 . 
+# p2L         -0.08897    0.02560  -3.476  0.00106 **
+#   ---
+#   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Residual standard error: 1.624 on 50 degrees of freedom
+# Multiple R-squared:  0.2212,	Adjusted R-squared:   0.19 
+# F-statistic:   7.1 on 2 and 50 DF,  p-value: 0.001931
+
+
