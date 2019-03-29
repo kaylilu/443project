@@ -176,4 +176,9 @@ fit
 fc<-predict(fit, n.step=19,newxreg=mydat[36:(54),2])$pred
 rmse = sqrt(sum((mydat[36:54,1]-fc)^2)/19) # 2.473665
 rmse
+fc = c(fc,NaN)
+displaylist[,7]<-fc
+
+# final forcast table 
+`colnames<-`(displaylist,c("year","holdout","persist","avg","holt-winter","arima","arimax"))
 
